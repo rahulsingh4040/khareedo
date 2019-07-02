@@ -1,0 +1,56 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+<title>Khareedo-Home</title>
+{% endblock %}
+{% block body %}
+  <div class = "container-fluid">  
+    
+    {% for product, range, nSlides in allprods %}
+    <h5 class="my-4">{{product.0.product_cat}} - Recommended for you</h5>
+    <div class = "row">   
+    <div id="demo{{forloop.counter}}" class="carousel slide my-3 col" data-ride="carousel">
+          
+        <ul class = "carousel-indicators">          
+          <li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
+          
+          {% for i in range %}
+          <li data-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
+          {% endfor %}
+        </ul>
+
+        <div class="container carousel-inner no-padding">
+          <div class="carousel-item active">
+            {% for i in product %}
+            <div class="col-xs-3 col-sm-3 col-md-3">
+              <div class="card" style="width: 18rem;">
+                <img class="card-img-top mx-auto" src='/media/{{i.product_img}}' alt="Card image cap">
+                <div class="card-body">
+                  <h5 class="card-title">{{ i.product_name }}</h5>
+                  <p class="card-text">Rs. {% if i.product_discount %}<strike>{{i.product_price}}</strike>&nbsp;{% endif %}<b>{{ i.product_amt }}</b>{% if i.product_discount %}&nbsp;({{i.product_discount}}% discount){% endif %}</p>
+                  <span div = "divpr{{i.id}}" class="divpr">
+                  <a href='products/{{ i.id }}/'><button id="vp{{i.id}}" class="btn btn-primary cart">View</button></a>
+                </span>
+                  <a href='checkout/'></a><button id="qv{{i.id}}" class="btn btn-primary cart">Add to Cart</button></a>
+                   
+                </div>
+              </div>
+            </div>
+            {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+              </div><div class = "carousel-item">
+            {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#demo{{forloop.counter}}" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </a>
+      <a class="carousel-control-next" href="#demo{{forloop.counter}}" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </a>
+    </div>   
+    {% endfor %}
+  </div>
+  
+{% endblock %}

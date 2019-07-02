@@ -1,0 +1,26 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+<title>Khareedo-{{product.product_name}}</title>
+{% endblock %}
+
+{% block body %}
+<div class = "container my-4">
+    <div class = "row">
+        <div class = "col-md-4">
+            <div class = "row">
+                <img src="/media/{{product.product_img}}" width = "300 px" style="max-height: 300px;">
+            </div>
+            <div class = "row">
+                <button class="btn btn-primary mx-4 my-2">Buy Now</button>
+                <button class="btn btn-primary my-2">Add to Cart</button>
+            </div>
+        </div>
+        <div class = "col-md-8">
+            <h5>{{product.product_name}}</h5>
+            <p>Rs. {% if product.product_discount %}<strike>{{product.product_price}}</strike>&nbsp;{% endif %}<b>{{ product.product_amt }}</b>{% if product.product_discount %}&nbsp;({{product.product_discount}}% discount){% endif %}</p>
+            <p>{{product.product_desc}}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    {% block title %}{% endblock %}
+    <style>
+      .col-md-3{
+        display: inline-block;
+        margin-left:-4px;
+      }
+
+      .col-md-3 img{
+        max-width: 200px;
+        height: 200px;
+        
+      }
+
+      body .carousel-indicator li{
+        background-color: blue;
+      }
+
+      body .carousel-indicators{
+        bottom:0;
+      }
+      body .carousel-control-prev-icon, body .carousel-control-next-icon{
+        background-color: blueviolet;
+      }
+
+      .carousel-control-prev, .carousel-control-next{
+        padding-top:200px;
+        top: auto;
+        bottom: auto;
+      }
+
+      body .no-padding{
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      .h5{
+        margin-left:30px;
+      }
+    </style>
+  </head>
+  <body>
+    {% load static %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">
+        <img src="/static/shop/logo.gif" width="50" height="30" class="d-inline-block align-top mx-1" alt="">Khareedo</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Cateogries
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Electronics</a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Mobile</a>
+                  </div>
+                <a class="dropdown-item" href="#">Fashion</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/track-item">Tracker</a>
+            </li> 
+          <li class="nav-item">
+              <a class="nav-link" href="/about">About Us</a>
+          </li>
+          
+          
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        
+        <button type="button" class="btn btn-secondary mx-2" id="popcart" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus
+          sagittis lacus vel augue laoreet rutrum faucibus.">
+          Cart(<span id="cart">0</span>)
+        </button>
+      </div>
+    </nav>
+
+    {% block body %}
+    {% endblock %}
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+        if(localStorage.getItem('cart') == null){
+          cart = {};
+        }
+        else{
+          cart = JSON.parse(localStorage.getItem('cart'));
+          document.getElementById('cart').innerHTML = Object.keys(cart).length;
+          updatecart(cart)
+        }
+        $('.cart').click(function(){
+          var idstr = this.id.toString();
+          if(cart[idstr] != undefined){
+            cart[idstr] = cart[idstr] + 1;
+          }
+          else{
+            cart[idstr] = 1;
+          }
+          updatecart(cart)
+          localStorage.setItem('cart', JSON.stringify(cart));
+          document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        });
+        $('#popcart').popover();
+        document.getElementById('popcart').setAttribute('data-content','<h6>Cart - Items you ordered</h6>');
+
+        function updatecart(cart){
+          for(var item in cart){
+            document.getElementById("div" + item).innerHTML = "<button id='minus" + item + "'class = 'btn btn-primary minus'>-</button> <span id = 'val" + cart[item]+ "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
+            }
+        }
+      </script>
+  </body>
+</html>
