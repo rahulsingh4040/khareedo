@@ -3,8 +3,96 @@
 {% block title %}
 <title>Khareedo-Track Item</title>
 {% endblock %}
-
-
 {% block body %}
-This is tracker page...(under constrcution)
+<div class = "container">
+    <div class = "col my-4">
+        <h4>Khareedo Order Tracker - Track your orders</h4>
+        <form method="POST" action="" id='trackerForm'>{% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="order_id">Order Id</label>
+                    <input type="text" class="form-control" id="order_id" placeholder="Order ID" name="order_id" required>
+                </div>
+                <div class="form-group col-md-6">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Email" name="email" required>
+                </div>
+            </div>
+            <div class="text-center my-2">
+            <button type="submit" class="btn btn-primary mr-2">Track Order</button>
+            <button type="button" class="btn btn-primary ml-2" onclick="resetitems()">Reset</button>
+        </div>
+        </form>
+    </div>
+    <div class ="col my-4">
+        <h4> Your Order Status </h4>
+        <div class="my-4">
+            <ul class = 'list-group' id='items'>
+                <p>Enter your order Id and Email and click Track Order to find details about your order!</p>
+            </ul>
+        </div>
+    </div>
+    <div class ="col my-4">
+            <h4> Your Order Details </h4>
+            <div class="my-4">
+                <ul class = 'list-group' id='citems'>
+                    <p>Your order details here.</p>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    $('#trackerForm').submit(function(event){
+        $('#items').empty();
+        $('#citems').empty();
+        var formData = {
+            'order_id': $('input[name=order_id]').val(),
+            'email': $('input[name=email]').val(),
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken').val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/track-item/',
+            data: formData,
+            encode: true
+        })
+        .done(function(data){
+            data = JSON.parse(data);
+            updates = data[0];
+            if(updates.length > 0 & updates!={}){
+                for(i=0; i<updates.length; i++){
+                    let text = updates[i]['text'];
+                    let time = updates[i]['time'];
+                    mystr = '<li class="list-group-item d-flex justify-content-between align-items-center">'+text+'<span class="badge badge-primary badge-pill">'+time+'</span></li>';
+                    $('#items').append(mystr);
+                }
+            }
+            else{
+                mystr = '<li class="list-group-item d-flex justify-content-between align-items-center">Sorry, We are not able to fetch this order id and email. Make sure to type correct order Id and email.</li>';
+                $('#items').append(mystr);
+            }
+
+            cart = JSON.parse(data[1]);
+            for(item in cart){
+                let name = cart[item][1];
+                let qty = cart[item][0];
+                mystr = '<li class="list-group-item d-flex justify-content-between align-items-center">'+ name + '<span class="badge badge-primary badge-pill">'+qty+'</span></li>';
+                $('#citems').append(mystr);
+            }
+        });
+        event.preventDefault();
+    });
+    function resetitems(){
+        document.getElementById('order_id').value = "";
+        document.getElementById('email').value = "";
+        $('#items').empty();
+        $('#items').append('<p>Enter your order Id and Email and click Track Order to find details about your order!</p>');
+        $('#citems').empty();
+        $('#citems').append('<p>Your order details here.</p>');
+    }
+</script>
 {% endblock %}

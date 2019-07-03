@@ -24,3 +24,79 @@
     </div>
 </div>
 {% endblock %}
+{% block js %}
+<script>
+    if(localStorage.getItem('cart') == null){
+      var cart = {};
+    }
+    else{
+      cart = JSON.parse(localStorage.getItem('cart'));
+      updatecart(cart);
+    }
+    $('.cart').click(function(){
+      var idstr = this.id.toString();
+      if(cart[idstr] != undefined){
+        cart[idstr] = cart[idstr] + 1;
+      }
+      else{
+        cart[idstr] = 1;
+      }
+      updatecart(cart);
+    });
+    $('#popcart').popover();
+    updatepopover(cart);
+
+    function updatepopover(cart){
+      var popstr = "";
+      popstr = popstr + "<h6>Cart - Your Shopping bag</h6><div class='mx-2 my-2'>";
+      var i =1;
+      for(var item in cart){
+        popstr = popstr + "<b>" + i + "</b>. "
+        popstr = popstr + document.getElementById('name' + item).innerHTML + "&nbsp;:&nbsp;" + cart[item] + " items<br>";
+        i = i + 1;
+      }
+      popstr = popstr + "</div>";
+      console.log(popstr);
+      document.getElementById('popcart').setAttribute('data-content',popstr);
+      $('#popcart').popover('show');
+    }
+    function clearcart(){
+      cart = JSON.parse(localStorage.getItem('cart'));
+      for(var item in cart){
+        document.getElementById('div' + item).innerHTML = '<button id="'+ item +'" class="btn btn-primary cart">Add to Cart</button>';
+      }
+      localStorage.clear();
+      cart = {};
+      updatecart(cart);
+    }
+
+
+    function updatecart(cart){
+      var sum = 0;
+      for(var item in cart){
+        sum = sum + cart[item];
+        document.getElementById("div" + item).innerHTML = "<button id='minus" + item + "'class = 'btn btn-primary minus'>-</button> <span id = 'val" + item + "''>" + cart[item] + "</span> <button id='plus" + item + "' class = 'btn btn-primary plus'> + </button>";
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        document.getElementById('cart').innerHTML = sum;
+        updatepopover(cart);
+    }
+
+    $('.divpr').on("click", "button.minus", function(){
+      a = this.id.slice(7, );
+      cart['pr'+a] = cart['pr'+a] - 1;
+      cart['pr'+a] = Math.max(0, cart['pr'+a]);
+      
+        document.getElementById('valpr' + a).innerHTML = cart['pr'+a];
+      
+      updatecart(cart);
+    });
+
+    $('.divpr').on("click", "button.plus", function(){
+      a = this.id.slice(6, );
+      cart['pr'+a] = cart['pr'+a] + 1;
+      document.getElementById('valpr'+a).innerHTML = cart['pr'+a];
+      updatecart(cart);
+    });
+  </script>
+  {% endblock %}
