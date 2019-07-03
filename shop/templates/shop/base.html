@@ -89,8 +89,7 @@
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
         
-        <button type="button" class="btn btn-secondary mx-2" id="popcart" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus
-          sagittis lacus vel augue laoreet rutrum faucibus.">
+        <button type="button" class="btn btn-secondary mx-2" id="popcart" data-html="true" data-container="body" data-toggle="popover" data-placement="bottom" data-content="">
           Cart(<span id="cart">0</span>)
         </button>
       </div>
@@ -107,12 +106,11 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script>
         if(localStorage.getItem('cart') == null){
-          cart = {};
+          var cart = {};
         }
         else{
           cart = JSON.parse(localStorage.getItem('cart'));
-          document.getElementById('cart').innerHTML = Object.keys(cart).length;
-          updatecart(cart)
+          updatecart(cart);
         }
         $('.cart').click(function(){
           var idstr = this.id.toString();
@@ -122,18 +120,63 @@
           else{
             cart[idstr] = 1;
           }
-          updatecart(cart)
-          localStorage.setItem('cart', JSON.stringify(cart));
-          document.getElementById('cart').innerHTML = Object.keys(cart).length;
+          updatecart(cart);
         });
         $('#popcart').popover();
-        document.getElementById('popcart').setAttribute('data-content','<h6>Cart - Items you ordered</h6>');
+        updatepopover(cart);
+
+        function updatepopover(cart){
+          var popstr = "";
+          popstr = popstr + "<h6>Cart - Your Shopping bag</h6><div class='mx-2 my-2'>";
+          var i =1;
+          for(var item in cart){
+            popstr = popstr + "<b>" + i + "</b>. "
+            popstr = popstr + document.getElementById('name' + item).innerHTML + "&nbsp;:&nbsp;" + cart[item] + " items<br>";
+            i = i + 1;
+          }
+          popstr = popstr + "</div>";
+          console.log(popstr);
+          document.getElementById('popcart').setAttribute('data-content',popstr);
+          $('#popcart').popover('show');
+        }
+        function clearcart(){
+          cart = JSON.parse(localStorage.getItem('cart'));
+          for(var item in cart){
+            document.getElementById('div' + item).innerHTML = '<button id="'+ item +'" class="btn btn-primary cart">Add to Cart</button>';
+          }
+          localStorage.clear();
+          cart = {};
+          updatecart(cart);
+        }
+
 
         function updatecart(cart){
+          var sum = 0;
           for(var item in cart){
-            document.getElementById("div" + item).innerHTML = "<button id='minus" + item + "'class = 'btn btn-primary minus'>-</button> <span id = 'val" + cart[item]+ "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
+            sum = sum + cart[item];
+            document.getElementById("div" + item).innerHTML = "<button id='minus" + item + "'class = 'btn btn-primary minus'>-</button> <span id = 'val" + item + "''>" + cart[item] + "</span> <button id='plus" + item + "' class = 'btn btn-primary plus'> + </button>";
             }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            document.getElementById('cart').innerHTML = sum;
+            updatepopover(cart);
         }
+
+        $('.divpr').on("click", "button.minus", function(){
+          a = this.id.slice(7, );
+          cart['pr'+a] = cart['pr'+a] - 1;
+          cart['pr'+a] = Math.max(0, cart['pr'+a]);
+          
+            document.getElementById('valpr' + a).innerHTML = cart['pr'+a];
+          
+          updatecart(cart);
+        });
+
+        $('.divpr').on("click", "button.plus", function(){
+          a = this.id.slice(6, );
+          cart['pr'+a] = cart['pr'+a] + 1;
+          document.getElementById('valpr'+a).innerHTML = cart['pr'+a];
+          updatecart(cart);
+        });
       </script>
   </body>
 </html>
