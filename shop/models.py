@@ -28,6 +28,7 @@ class order(models.Model):
     state  = models.CharField(max_length=30)
     zipcode = models.CharField(max_length=6)
     phone = models.CharField(max_length=10,default="")
+    amount = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -40,3 +41,15 @@ class OrderUpdate(models.Model):
 
     def __str__(self):
         return self.update_desc[0:7] + "..."
+
+class Feedback(models.Model):
+    feedback_id = models.AutoField(primary_key = True)
+    name = models.CharField(max_length=50)
+    email = models.CharField(max_length=100)
+    phoneno = models.IntegerField(default=0)
+    subject = models.CharField(max_length=200)
+    msg = models.CharField(max_length=1000)
+
+    def __str__(self):
+        fid = str(self.feedback_id)
+        return fid

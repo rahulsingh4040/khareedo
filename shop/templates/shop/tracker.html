@@ -46,6 +46,12 @@
 
 {% block js %}
 <script>
+  cart = JSON.parse(localStorage.getItem('cart'));
+  var sum = 0;
+  for(item in cart){
+    sum = sum + cart[item][0];
+  }
+  document.getElementById('cart').innerHTML = sum;
     $('#trackerForm').submit(function(event){
         $('#items').empty();
         $('#citems').empty();

@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-from .models import Product,order, OrderUpdate
+from .models import Product,order, OrderUpdate, Feedback
 from math import ceil
 import json
 
@@ -19,6 +19,15 @@ def index(request):
     return render(request,'shop/index.html', params)
 
 def about(request):
+    if request.method == 'POST':
+        name = request.POST.get('name','')
+        email = request.POST.get('email','')
+        phoneno = request.POST.get('phoneno','')
+        subject = request.POST.get('subject','')
+        msg = request.POST.get('msg','')
+        feed = Feedback(name=name, email=email, phoneno=phoneno, subject=subject, msg=msg)
+        feed.save();
+
     return render(request,'shop/about.html')
 
 def track(request):
@@ -56,7 +65,8 @@ def checkout(request):
         zipcode = request.POST.get("zip",'')
         phone = request.POST.get("contact",'')
         items_json = request.POST.get("itemsJson", '')
-        ord = order(items_json=items_json ,name=name, email=email, address=address, city=city, state=state, zipcode=zipcode, phone=phone)
+        amount = request.POST.get("amount",'')
+        ord = order(items_json=items_json ,name=name, email=email, address=address, city=city, state=state, zipcode=zipcode, phone=phone, amount=amount)
         ord.save()
         thank = True
         id = ord.order_id
