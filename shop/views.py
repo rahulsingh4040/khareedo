@@ -52,7 +52,8 @@ def track(request):
 
 def productview(request, id):
     product = Product.objects.filter(id=id)
-    print(product)
+    for prod in product:
+        prod.product_amt = int(prod.product_price - (prod.product_discount/100)*prod.product_price)
     return render(request,'shop/viewproduct.html',{'product':product[0]})
 
 def checkout(request):

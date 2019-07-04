@@ -18,7 +18,7 @@
         </div>
         <div class = "col-md-8">
             <h5>{{product.product_name}}</h5>
-            <p>Rs. {% if product.product_discount %}<strike>{{product.product_price}}</strike>&nbsp;{% endif %}<b>{{ product.product_amt }}</b>{% if product.product_discount %}&nbsp;({{product.product_discount}}% discount){% endif %}</p>
+            <p>Rs. {% if product.product_discount %}<strike>{{product.product_price}}</strike>&nbsp;{% endif %}<b>{{product.product_amt}}</b>{% if product.product_discount %}&nbsp;({{product.product_discount}}% discount){% endif %}</p>
             <p>{{product.product_desc}}</p>
         </div>
     </div>
