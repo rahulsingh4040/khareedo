@@ -66,7 +66,7 @@ def checkout(request):
         zipcode = request.POST.get("zip",'')
         phone = request.POST.get("contact",'')
         items_json = request.POST.get("itemsJson", '')
-        amount = request.POST.get("amount",'')
+        amount = request.POST.get("amount",0)
         ord = order(items_json=items_json ,name=name, email=email, address=address, city=city, state=state, zipcode=zipcode, phone=phone, amount=amount)
         ord.save()
         thank = True
