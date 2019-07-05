@@ -26,26 +26,27 @@ def index(request):
 def searchMatch(query, item):
     if query in item.product_name.lower() or query in item.product_cat.lower() or query in item.product_subcat.lower() or query in item.product_desc.lower():
         return True
+
     else:
         return False
-
-
+ 
 def search(request):
     query = request.GET.get('search')
     allprods = []
+    cnt = 0
+    prod = []
     catprods = Product.objects.values('product_cat')
     cats = {item['product_cat'] for item in catprods}
     for cat in cats:
         prodtemp = Product.objects.filter(product_cat=cat)
         prod = [item for item in prodtemp if searchMatch(query.lower(), item)]
+        cnt = cnt + len(prod)
         n = len(prod)
         nSlides = n//4 + ceil((n/4) - (n//4))
         if len(prod)!=0:
             allprods.append([prod, range(1,nSlides), nSlides])
-    params = {'allprods':allprods, 'msg':""}
-    if len(allprods) == 0:
-        params : {"msg": "0 items found"}
-    return render(request, 'shop/search.html', params)          
+    msg = str(cnt) + " items found"
+    return render(request, 'shop/search.html', {'allprods': allprods, "msg": msg})          
 
 def about(request):
     if request.method == 'POST':

@@ -23,7 +23,7 @@
     <div class = "col">
         <h4>Step 2 - Enter address and contact details</h4>
         <form method="POST" action="/checkout/">{% csrf_token %}
-            <input type = "hidden" name="amount" id="amount">
+            <input type = "hidden" name="amount" id="amount" readonly>
             <input type="hidden" name="itemsJson" id="itemsJson">
             <div class="form-row">
                 <div class="form-group col-md-6">

@@ -64,7 +64,6 @@
           <li data-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
           {% endfor %}
         </ul>
-
         <div class="container carousel-inner no-padding">
           <div class="carousel-item active">
             {% for i in product %}
@@ -73,7 +72,7 @@
                 <img class="card-img-top mx-auto" src='/media/{{i.product_img}}' alt="Card image cap">
                 <div class="card-body">
                   <h5 class="card-title" id="namepr{{i.id}}">{{ i.product_name }}</h5>
-                  <p class="card-text">Rs. {% if i.product_discount %}<strike>{{i.product_price}}</strike>&nbsp;{% endif %}<b><span id="amtpr{{i.id}}">{{ i.product_amt }}</span></b>{% if i.product_discount %}&nbsp;({{i.product_discount}}% discount){% endif %}</p>
+                  <p class="card-text">Rs. {% if i.product_discount %}<strike>{{i.product_price}}</strike>&nbsp;{% endif %}<b><span id = "amtpr{{i.id}}">{{i.product_amt}}</span></b>{% if i.product_discount %}&nbsp;({{i.product_discount}}% discount){% endif %}</p>
                   <a href='products/{{ i.id }}/'><button id="qv{{i.id}}" class="btn btn-primary cart">View</button></a>
                   <span id = "divpr{{i.id}}" class="divpr">
                     <button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>

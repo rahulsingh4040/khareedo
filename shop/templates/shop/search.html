@@ -51,7 +51,7 @@
 {% endblock %}
 {% block body %}
   <div class = "container-fluid">  
-    
+    <h4 class = 'my-3'><span id='noitems'></span></h4>
     {% for product, range, nSlides in allprods %}
     <h5 class="my-4">{{product.0.product_cat}} - Recommended for you</h5>
     <div class = "row">   
@@ -101,6 +101,7 @@
 {% endblock %}
 {% block js %}
 <script>
+  document.getElementById('noitems').innerHTML = "{{msg}}"
   if(localStorage.getItem('cart') == null){
     var cart = {};
   }
