@@ -2,6 +2,10 @@ from django.shortcuts import render, HttpResponse
 from .models import Product,order, OrderUpdate, Feedback
 from math import ceil
 import json
+from django.views.decorators.csrf import csrf_exempt
+from PayTm import Checksum
+
+MERCHANT_KEY = "QkMhaeO8ybGj!2sy"
 
 def index(request):
     allprods = []
@@ -11,12 +15,37 @@ def index(request):
         prod = Product.objects.filter(product_cat=cat)
         for produc in prod:
             produc.product_amt = int(produc.product_price - (produc.product_discount/100)*produc.product_price)
+            produc.save()
         n = len(prod)
         nSlides = n//4 + ceil(n/4 - n//4)
         allprods.append([prod, range(1, nSlides), nSlides])
     params = {'allprods':allprods}
     
     return render(request,'shop/index.html', params)
+
+def searchMatch(query, item):
+    if query in item.product_name.lower() or query in item.product_cat.lower() or query in item.product_subcat.lower() or query in item.product_desc.lower():
+        return True
+    else:
+        return False
+
+
+def search(request):
+    query = request.GET.get('search')
+    allprods = []
+    catprods = Product.objects.values('product_cat')
+    cats = {item['product_cat'] for item in catprods}
+    for cat in cats:
+        prodtemp = Product.objects.filter(product_cat=cat)
+        prod = [item for item in prodtemp if searchMatch(query.lower(), item)]
+        n = len(prod)
+        nSlides = n//4 + ceil((n/4) - (n//4))
+        if len(prod)!=0:
+            allprods.append([prod, range(1,nSlides), nSlides])
+    params = {'allprods':allprods, 'msg':""}
+    if len(allprods) == 0:
+        params : {"msg": "0 items found"}
+    return render(request, 'shop/search.html', params)          
 
 def about(request):
     if request.method == 'POST':
@@ -73,6 +102,34 @@ def checkout(request):
         id = ord.order_id
         ordupdate = OrderUpdate(order_id = id, update_desc="The order has been placed")
         ordupdate.save()
-        return render(request, 'shop/checkout.html',{'id':id, 'thank':thank})
+        param_dict = {
+            'MID':'CGTtuV46964642507305',
+            'ORDER_ID': str(ord.order_id),
+            'TXN_AMOUNT': str(amount),
+            'CUST_ID': email,
+            'INDUSTRY_TYPE_ID':'Retail',
+            'WEBSITE':'WEBSTAGING',
+            'CHANNEL_ID':'WEB',
+	        'CALLBACK_URL':'http://127.0.0.1:8000/handlerequest/',
+        }
+        param_dict['CHECKSUMHASH'] = Checksum.generate_checksum(param_dict, MERCHANT_KEY)
+        #return render(request, 'shop/checkout.html',{'id':id, 'thank':thank})
+        return render(request, 'shop/paytm.html', {'param_dict':param_dict})
 
     return render(request,'shop/checkout.html');
+
+@csrf_exempt
+def handlerequest(request):
+    form = request.POST
+    resp_dict = {}
+    for i in form.keys():
+        resp_dict[i] = form[i]
+        if(i == 'CHECKSUMHASH'):
+            checksum = form[i]
+
+    verify = Checksum.verify_checksum(resp_dict, MERCHANT_KEY, checksum)
+    if not verify:
+        print("Payment Tampering")
+        return HttpResponse("Dont try to act smart, someone's watching")
+    else:
+        return render(request, 'shop/paymentstatus.html', {'response':resp_dict})

@@ -1,0 +1,55 @@
+{% extends 'shop/base.html' %}
+{% block title %}
+<title>Khareedo - Payment Status</title>
+{% endblock %}
+{% block body %}
+    <div class = 'container'>
+        <h2 class='my-3' style="text-align: center;">Payment Status</h2>
+        {% if response.RESPCODE == '01' %}
+            <h4 style="font-weight: bold" id='paystat'>ORDER PLACED</h4>
+            <div id='Order Details'>
+            <table class="table">
+                <tbody>
+                    <tr>
+                    <th scope="row">Order ID</th>
+                    <td>{{response.ORDERID}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">TXN AMOUNT</th>
+                    <td>{{response.TXNAMOUNT}}</td>
+                    </tr>
+                    <tr>
+                    <th scope="row">PAYMENT TIME</th>
+                    <td>{{response.TXNDATE}}</td>
+                    </tr>
+                    <th scope="row">PAYMENT STATUS</th>
+                    <td>{{response.STATUS}}</td>
+                    </tr>
+                    <th scope="row">TRANSACTION ID</th>
+                    <td>{{response.TXNID}}</td>
+                    </tr>
+                    <th scope="row">BANK</th>
+                    <td>{{response.BANKNAME}}</td>
+                    </tr>
+                    <th scope="row">BANK ID</th>
+                    <td>{{response.BANKTXNID}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="my-2">*Please note order ID and Transaction details for future use.</p>
+            </div>
+        {% else %}
+            <p>TRANSACTION FAILURE</p>
+        {% endif %}
+        <a href = '/'><button type="button" class='btn btn-primary'>Shop More</button></a>
+    </div>
+{% endblock %}
+{% block js %}
+<script>
+var stat = document.getElementById('paystat').innerHTML
+if( stat == 'ORDER PLACED'){
+    localStorage.clear();
+    cart = {};
+}
+</script>   
+{% endblock %}

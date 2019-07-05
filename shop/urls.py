@@ -7,4 +7,6 @@ urlpatterns = [
     path('track-item/', views.track, name='TrackItem'),
     path('products/<int:id>/', views.productview, name="ProductView"),
     path('checkout/', views.checkout, name="CheckOut"),
+    path('handlerequest/',views.handlerequest,name="HandleRequest"),
+    path('search/', views.search, name="Search"),
 ]

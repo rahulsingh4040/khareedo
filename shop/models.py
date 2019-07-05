@@ -31,7 +31,8 @@ class order(models.Model):
     amount = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.name
+        id = str(self.order_id)
+        return id
 
 class OrderUpdate(models.Model):
     update_id = models.AutoField(primary_key = True)
